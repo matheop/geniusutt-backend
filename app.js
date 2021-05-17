@@ -1,5 +1,44 @@
 const express = require("express");
+const mongoose = require("mongoose");
+
+const bodyParser = require("body-parser");
+
+const usersRoutes = require("./routes/users");
 
 const app = express();
 
-app.listen(8080);
+app.use(bodyParser.json()); // application/json
+
+app.use((req, res, next) => {
+	res.setHeader(
+		"Access-Control-Allow-Origin",
+		"*, http://localhost"
+	);
+	res.setHeader(
+		"Access-Control-Allow-Methods",
+		"GET, POST, PUT, PATCH, DELETE"
+	);
+	res.setHeader(
+		"Access-Control-Allow-Headers",
+		"Content-Type, Authorization"
+	);
+	next();
+});
+
+app.use("/users", usersRoutes);
+
+app.use((error, req, res, next) => {
+	const status = error.statusCode || 500;
+	const message = error.message;
+	res.status(status).json({ message });
+});
+
+mongoose
+	.connect(
+		"mongodb+srv://matheop:Tf1aP8s2U7bhOZML@cluster0.0ihgb.mongodb.net/genius-utt?authSource=admin&replicaSet=atlas-jkg9wq-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true",
+		{ useNewUrlParser: true, useUnifiedTopology: true }
+	)
+	.then(() => {
+		app.listen(8080);
+	})
+	.catch((err) => console.log(err));
