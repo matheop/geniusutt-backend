@@ -39,17 +39,22 @@ exports.getOneById = (req, res, next) => {
 // POST
 exports.create = (req, res) => {
 	const errors = validationResult(req);
-	if (!errors.isEmpty()) throw errorHandler("Invalid data.", 422);
+	if (!errors.isEmpty()) {
+		return res.status(422).json({
+			success: false,
+			requiredFields: ["name", "email", "role"],
+			errors: errors.array(),
+		});
+	}
 
-	const name = req.body.name;
-	const email = req.body.email;
-	const role = req.body.role;
+	const { name, email, role } = req.body;
 
 	const user = new User({
 		name: name,
 		email: email,
 		role: role,
 	});
+
 	user.save()
 		.then((result) => {
 			res.status(201).json({
@@ -68,7 +73,13 @@ exports.update = (req, res, next) => {
 	const id = req.params.userId;
 
 	const errors = validationResult(req);
-	if (!errors.isEmpty()) throw errorHandler("Invalid data.", 422);
+	if (!errors.isEmpty()) {
+		return res.status(422).json({
+			success: false,
+			requiredFields: "",
+			errors: errors.array(),
+		});
+	}
 
 	User.findById(id)
 		.then((user) => {
