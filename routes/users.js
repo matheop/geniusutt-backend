@@ -28,9 +28,22 @@ router.post(
 );
 
 // UPDATE
-router.patch("/update", usersController.update);
+router.put(
+	"/update/:userId",
+	[
+		body("name")
+			.trim()
+			.isLength({ min: 2 })
+			.withMessage("Must have at least 2 chars"),
+		body("email")
+			.isEmail()
+			.withMessage("Doesn't match email pattern"),
+		body("role").isIn(["Admin", "Modo"]),
+	],
+	usersController.update
+);
 
 // DELETE
-router.delete("/delete", usersController.delete);
+router.delete("/delete/:userId", usersController.delete);
 
 module.exports = router;

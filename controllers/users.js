@@ -63,42 +63,50 @@ exports.create = (req, res) => {
 		});
 };
 
-// PATCH
-exports.update = (req, res) => {
-	const name = req.body.name;
-	const email = req.body.email;
-	const role = req.body.role;
+// PUT
+exports.update = (req, res, next) => {
+	const id = req.params.userId;
 
-	// TODO: find & update user in DB
-	const id = "hey";
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) throw errorHandler("Invalid data.", 422);
 
-	res.status(200).json({
-		message: "User updated successfully",
-		user: {
-			id: id,
-			name: name,
-			email: email,
-			role: role,
-		},
-	});
+	User.findById(id)
+		.then((user) => {
+			if (!user) throw errorHandler("No user found.", 404);
+
+			user.name = req.body.name;
+			user.email = req.body.email;
+			user.role = req.body.role;
+
+			return user.save();
+		})
+		.then((user) => {
+			res.status(200).json({
+				message: "User successfully updated",
+				user,
+			});
+		})
+		.catch((error) => {
+			const err = error500(error);
+			next(err);
+		});
 };
 
 // DELETE
-exports.delete = (req, res) => {
-	const id = req.body._id;
+exports.delete = (req, res, next) => {
+	const id = req.params.userId;
 
-	if (id === "wazaaa")
-		res.status(200).json({
-			message: "User deleted successfully",
-			user: {
-				id: "id",
-				name: "name",
-				email: "email",
-				role: "role",
-			},
-		});
-	else
-		throw res.status(500).json({
-			message: "Bad request: id not found",
+	User.findByIdAndDelete(id)
+		.then((user) => {
+			if (!user) throw errorHandler("No user found.", 404);
+		})
+		.then(() => {
+			res.status(200).json({
+				message: "User deleted successfully",
+			});
+		})
+		.catch((error) => {
+			const err = error500(error);
+			next(err);
 		});
 };
