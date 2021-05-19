@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator");
 
-const BoardMember = require("../models/board-members");
+const BoardMember = require("../models/board-member");
 
 const { error500, errorHandler } = require("../utils/error");
 

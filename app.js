@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 
 const usersRoutes = require("./routes/users");
 const boardMembersRoutes = require("./routes/board-members");
+const formsRoutes = require("./routes/contact");
 
 const app = express();
 
@@ -27,8 +28,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/users", usersRoutes);
-
 app.use("/board-members", boardMembersRoutes);
+app.use("/contact", formsRoutes);
 
 app.use((error, req, res, next) => {
 	const status = error.statusCode || 500;
