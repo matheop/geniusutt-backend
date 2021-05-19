@@ -1,6 +1,7 @@
 const { body } = require("express-validator");
 
-exports.createUserValidator = [
+/* Users */
+exports.userValidator = [
 	body("name", "name must have at least 2 chars")
 		.exists()
 		.trim()
@@ -8,11 +9,15 @@ exports.createUserValidator = [
 	body("email", "Invalid email").exists().isEmail(),
 	body("role").exists().isIn(["Admin", "Modo"]),
 ];
-exports.updateUserValidator = [
+
+/* Board Members */
+exports.memberValidator = [
 	body("name", "name must have at least 2 chars")
-		.optional()
+		.exists()
 		.trim()
 		.isLength({ min: 2 }),
-	body("email", "Invalid email").optional().isEmail(),
-	body("role").optional().isIn(["Admin", "Modo"]),
+	body("position").exists(),
+	body("shortDesc").exists().isLength({ min: 100 }),
+	body("longDesc").exists().isLength({ min: 200 }),
+	body("linkedin").exists().contains("www.linkedin.com/in"),
 ];

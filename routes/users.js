@@ -2,10 +2,7 @@ const express = require("express");
 
 const usersController = require("../controllers/users");
 
-const {
-	updateUserValidator,
-	createUserValidator,
-} = require("../utils/dataValidator");
+const { userValidator } = require("../utils/dataValidator");
 
 const router = express.Router();
 
@@ -16,14 +13,10 @@ router.get("/getAll", usersController.getAll);
 router.get("/getOne/:userId", usersController.getOneById);
 
 // CREATE
-router.post("/create", createUserValidator, usersController.create);
+router.post("/create", userValidator, usersController.create);
 
 // UPDATE
-router.put(
-	"/update/:userId",
-	updateUserValidator,
-	usersController.update
-);
+router.put("/update/:userId", userValidator, usersController.update);
 
 // DELETE
 router.delete("/delete/:userId", usersController.delete);

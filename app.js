@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 const usersRoutes = require("./routes/users");
+const boardMembersRoutes = require("./routes/board-members");
 
 const app = express();
 
@@ -26,6 +27,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/users", usersRoutes);
+
+app.use("/board-members", boardMembersRoutes);
 
 app.use((error, req, res, next) => {
 	const status = error.statusCode || 500;
