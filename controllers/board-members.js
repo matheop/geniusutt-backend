@@ -5,40 +5,40 @@ const BoardMember = require("../models/board-members");
 const { error500, errorHandler } = require("../utils/error");
 
 // GET
-exports.getAll = (req, res, next) => {
-	BoardMember.find()
-		.then((members) => {
-			if (!members) throw errorHandler("No member found.", 404);
-			res.status(200).json({
-				message: "BoardMember fetched successfully",
-				members,
-			});
-		})
-		.catch((error) => {
-			const err = error500(error);
-			next(err);
+exports.getAll = async (req, res, next) => {
+	try {
+		const members = await BoardMember.find();
+		if (!members) throw errorHandler("No member found.", 404);
+		res.status(200).json({
+			success: true,
+			message: "BoardMember fetched successfully",
+			members,
 		});
+	} catch (error) {
+		const err = error500(error);
+		next(err);
+	}
 };
 
 // GET
-exports.getOneById = (req, res, next) => {
+exports.getOneById = async (req, res, next) => {
 	const id = req.params.userId;
-	BoardMember.findById(id)
-		.then((member) => {
-			if (!member) throw errorHandler("No member found.", 404);
-			res.status(200).json({
-				message: "BoardMember fetched successfully",
-				member,
-			});
-		})
-		.catch((error) => {
-			const err = error500(error);
-			next(err);
+	try {
+		const member = await BoardMember.findById(id);
+		if (!member) throw errorHandler("No member found.", 404);
+		res.status(200).json({
+			success: true,
+			message: "BoardMember fetched successfully",
+			member,
 		});
+	} catch (error) {
+		const err = error500(error);
+		next(err);
+	}
 };
 
 // POST
-exports.create = (req, res) => {
+exports.create = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(422).json({
@@ -65,22 +65,21 @@ exports.create = (req, res) => {
 		linkedin: linkedin,
 	});
 
-	member
-		.save()
-		.then((result) => {
-			res.status(201).json({
-				message: "BoardMember created successfully!",
-				member: result,
-			});
-		})
-		.catch((error) => {
-			const err = error500(error);
-			next(err);
+	try {
+		const result = await member.save();
+		res.status(201).json({
+			success: true,
+			message: "BoardMember created successfully!",
+			member: result,
 		});
+	} catch (error) {
+		const err = error500(error);
+		next(err);
+	}
 };
 
 // PUT
-exports.update = (req, res, next) => {
+exports.update = async (req, res, next) => {
 	const id = req.params.userId;
 
 	const errors = validationResult(req);
@@ -92,45 +91,45 @@ exports.update = (req, res, next) => {
 		});
 	}
 
-	BoardMember.findById(id)
-		.then((member) => {
-			if (!member) throw errorHandler("No member found.", 404);
+	try {
+		const member = await BoardMember.findById(id);
 
-			member.name = req.body.name;
-			member.position = req.body.position;
-			member.shortDesc = req.body.shortDesc;
-			member.longDesc = req.body.longDesc;
-			member.linkedin = req.body.linkedin;
+		if (!member) throw errorHandler("No member found.", 404);
 
-			return member.save();
-		})
-		.then((member) => {
-			res.status(200).json({
-				message: "BoardMember successfully updated",
-				member,
-			});
-		})
-		.catch((error) => {
-			const err = error500(error);
-			next(err);
+		member.name = req.body.name;
+		member.position = req.body.position;
+		member.shortDesc = req.body.shortDesc;
+		member.longDesc = req.body.longDesc;
+		member.linkedin = req.body.linkedin;
+
+		const result = await member.save();
+		res.status(200).json({
+			success: true,
+			message: "BoardMember successfully updated",
+			member: result,
 		});
+	} catch (error) {
+		const err = error500(error);
+		next(err);
+	}
 };
 
 // DELETE
-exports.delete = (req, res, next) => {
+exports.delete = async (req, res, next) => {
 	const id = req.params.userId;
 
-	BoardMember.findByIdAndDelete(id)
-		.then((member) => {
-			if (!member) throw errorHandler("No member found.", 404);
-		})
-		.then(() => {
-			res.status(200).json({
-				message: "BoardMember deleted successfully",
-			});
-		})
-		.catch((error) => {
-			const err = error500(error);
-			next(err);
+	try {
+		const member = await BoardMember.findByIdAndDelete(id);
+
+		if (!member) throw errorHandler("No member found.", 404);
+
+		res.status(200).json({
+			success: true,
+			message: "BoardMember deleted successfully",
+			deletedMember: member,
 		});
+	} catch (error) {
+		const err = error500(error);
+		next(err);
+	}
 };
