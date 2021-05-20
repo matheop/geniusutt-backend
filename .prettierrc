@@ -5,8 +5,5 @@
 	"singleQuote": false,
 	"endOfLine": "auto",
 	"arrowParens": "always",
-	"printWidth": 70,
-
-	"svelteSortOrder": "options-scripts-markup-styles",
-	"svelteBracketNewLine": false
+	"printWidth": 70
 }

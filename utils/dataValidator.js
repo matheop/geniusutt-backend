@@ -1,5 +1,31 @@
 const { body } = require("express-validator");
+const User = require("../models/user");
 const { scheduleValidator, dateValidator } = require("./regex");
+
+/* Sign up */
+exports.signupValidator = [
+	body("name", "name must have at least 2 chars")
+		.exists()
+		.isLength({ min: 2 }),
+	body("role").exists().isIn(["Admin", "Modo"]),
+	body("email", "Invalid email")
+		.exists()
+		.isEmail()
+		.custom((value, { req }) => {
+			return User.findOne({ email: value }).then((userDoc) => {
+				if (userDoc)
+					return Promise.reject(
+						"Cannot signup with this email"
+					);
+			});
+		}),
+];
+
+/* Log in */
+exports.loginValidator = [
+	body("email").exists(),
+	body("password").exists(),
+];
 
 /* Users */
 exports.userValidator = [

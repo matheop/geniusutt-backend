@@ -1,4 +1,6 @@
 const { validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+let generator = require("generate-password");
 
 const User = require("../models/user");
 const { error500, errorHandler } = require("../utils/error");
@@ -6,7 +8,7 @@ const { error500, errorHandler } = require("../utils/error");
 // GET
 exports.getAll = async (req, res, next) => {
 	try {
-		const users = await User.find();
+		const users = await User.find().select("-password");
 		if (!users) throw errorHandler("No user found.", 404);
 		res.status(200).json({
 			message: "Users fetched successfully",
@@ -22,9 +24,10 @@ exports.getAll = async (req, res, next) => {
 exports.getOneById = async (req, res, next) => {
 	const id = req.params.userId;
 	try {
-		const user = await User.findById(id);
+		const user = await User.findById(id).select("-password");
 
 		if (!user) throw errorHandler("No user found.", 404);
+
 		res.status(200).json({
 			message: "User fetched successfully",
 			user,
@@ -36,7 +39,7 @@ exports.getOneById = async (req, res, next) => {
 };
 
 // POST
-exports.create = async (req, res) => {
+exports.create = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(422).json({
@@ -46,20 +49,28 @@ exports.create = async (req, res) => {
 		});
 	}
 
-	const { name, email, role } = req.body;
-
-	const user = new User({
-		name: name,
-		email: email,
-		role: role,
-	});
+	const { email, name, role } = req.body;
 
 	try {
+		const password = generator.generate({
+			numbers: true,
+			symbols: true,
+			strict: true,
+		});
+		const hashedPwd = bcrypt.hash(password, 12);
+
+		const user = new User({
+			email,
+			password: hashedPwd,
+			name,
+			role,
+		});
 		const result = await user.save();
 
 		res.status(201).json({
-			message: "User created successfully!",
-			user: result,
+			success: true,
+			message: "User successfully created",
+			userId: result._id,
 		});
 	} catch (error) {
 		const err = error500(error);

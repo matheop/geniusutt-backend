@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 
 const bodyParser = require("body-parser");
 
+const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 const boardMembersRoutes = require("./routes/board-members");
 const formsRoutes = require("./routes/contact");
@@ -28,6 +29,8 @@ app.use((req, res, next) => {
 	next();
 });
 
+app.use("/auth", authRoutes);
+
 app.use("/users", usersRoutes);
 app.use("/board-members", boardMembersRoutes);
 app.use("/contact", formsRoutes);
@@ -36,7 +39,8 @@ app.use("/events", eventsRoutes);
 app.use((error, req, res, next) => {
 	const status = error.statusCode || 500;
 	const message = error.message;
-	res.status(status).json({ message });
+	const data = error.data;
+	res.status(status).json({ message, data });
 });
 
 mongoose
