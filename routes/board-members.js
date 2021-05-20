@@ -3,6 +3,7 @@ const express = require("express");
 const boardMembersController = require("../controllers/board-members");
 
 const { memberValidator } = require("../utils/dataValidator");
+const isAuth = require("../middleware/is-auth");
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.get("/getOne/:userId", boardMembersController.getOneById);
 // CREATE
 router.post(
 	"/create",
+	isAuth,
 	memberValidator,
 	boardMembersController.create
 );
@@ -22,11 +24,16 @@ router.post(
 // UPDATE
 router.put(
 	"/update/:userId",
+	isAuth,
 	memberValidator,
 	boardMembersController.update
 );
 
 // DELETE
-router.delete("/delete/:userId", boardMembersController.delete);
+router.delete(
+	"/delete/:userId",
+	isAuth,
+	boardMembersController.delete
+);
 
 module.exports = router;
