@@ -45,8 +45,12 @@ exports.memberValidator = [
 		.trim()
 		.isLength({ min: 2 }),
 	body("position").exists(),
-	body("shortDesc").exists().isLength({ min: 100 }),
-	body("longDesc").exists().isLength({ min: 200 }),
+	body("shortDesc", "shortDesc must contain at least 70 chars")
+		.exists()
+		.isLength({ min: 70 }),
+	body("longDesc", "longDesc must contain at least 200 chars")
+		.exists()
+		.isLength({ min: 200 }),
 	body("linkedin").exists().contains("www.linkedin.com/in"),
 ];
 
