@@ -36,7 +36,7 @@ exports.getOneById = async (req, res, next) => {
 };
 
 // POST
-exports.create = async (req, res) => {
+exports.create = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(422).json({
@@ -46,15 +46,26 @@ exports.create = async (req, res) => {
 		});
 	}
 
-	const { name, date, schedule, desc, imgUrl, videoUrl } = req.body;
+	const {
+		name,
+		date,
+		schedule,
+		place,
+		desc,
+		imgUrl,
+		videoUrl,
+		upcoming,
+	} = req.body;
 
 	const event = new Event({
 		name,
 		date,
 		schedule,
+		place,
 		desc,
 		imgUrl,
 		videoUrl,
+		upcoming,
 	});
 
 	try {
@@ -89,8 +100,13 @@ exports.update = async (req, res, next) => {
 		if (!event) throw errorHandler("No event found.", 404);
 
 		event.name = req.body.name;
-		event.email = req.body.email;
-		event.role = req.body.role;
+		event.date = req.body.date;
+		event.schedule = req.body.schedule;
+		event.place = req.body.place;
+		event.desc = req.body.desc;
+		event.imgUrl = req.body.imgUrl;
+		event.videoUrl = req.body.videoUrl;
+		event.upcoming = req.body.upcoming;
 
 		result = await event.save();
 

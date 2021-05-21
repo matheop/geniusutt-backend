@@ -80,10 +80,12 @@ exports.eventValidator = [
 		.isLength({ min: 5 }),
 	body("date", "Invalid date").exists().matches(dateValidator),
 	body("schedule").optional().matches(scheduleValidator),
+	body("place").optional(),
 	body("desc", "desc must have at least 20 chars")
 		.exists()
 		.trim()
 		.isLength({ min: 20 }),
 	body("imgUrl").optional(),
 	body("videoUrl").optional(),
+	body("upcoming").exists(),
 ];

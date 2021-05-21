@@ -19,6 +19,9 @@ const eventSchema = new Schema({
 	schedule: {
 		type: String,
 		validate: scheduleValidator,
+	},
+	place: {
+		type: String,
 		required: true,
 	},
 	desc: {
@@ -30,6 +33,14 @@ const eventSchema = new Schema({
 	},
 	videoUrl: {
 		type: String,
+	},
+	eventUrl: {
+		type: String,
+	},
+	upcoming: {
+		// TODO: temporary
+		type: Boolean,
+		required: true,
 	},
 });
 
