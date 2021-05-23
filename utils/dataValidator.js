@@ -71,6 +71,7 @@ exports.formValidator = [
 		.isLength({ min: 2 }),
 	body("message").exists().isLength({ min: 10 }),
 ];
+exports.updateFormState = body("contacted").exists().isBoolean();
 
 /* Events */
 exports.eventValidator = [

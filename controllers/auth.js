@@ -76,7 +76,7 @@ exports.login = async (req, res, next) => {
 		};
 
 		const token = jwt.sign(payload, "secretkey-magl", {
-			expiresIn: "1h",
+			expiresIn: "48h", // TODO: change expiration
 		});
 
 		res.status(200).json({ token, payload });

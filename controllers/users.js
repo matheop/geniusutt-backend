@@ -57,7 +57,7 @@ exports.create = async (req, res, next) => {
 			symbols: true,
 			strict: true,
 		});
-		const hashedPwd = bcrypt.hash(password, 12);
+		const hashedPwd = await bcrypt.hash(password, 12);
 
 		const user = new User({
 			email,
@@ -70,7 +70,7 @@ exports.create = async (req, res, next) => {
 		res.status(201).json({
 			success: true,
 			message: "User successfully created",
-			userId: result._id,
+			user: { name, email, role },
 		});
 	} catch (error) {
 		const err = error500(error);

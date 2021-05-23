@@ -4,6 +4,7 @@ const eventsController = require("../controllers/events");
 
 const { eventValidator } = require("../utils/dataValidator");
 const isAuth = require("../middleware/is-auth");
+// TODO: add "isAuth"
 
 const router = express.Router();
 
@@ -14,22 +15,16 @@ router.get("/getAll", eventsController.getAll);
 router.get("/getOne/:eventId", eventsController.getOneById);
 
 // CREATE
-router.post(
-	"/create",
-	isAuth,
-	eventValidator,
-	eventsController.create
-);
+router.post("/create", eventValidator, eventsController.create);
 
 // UPDATE
 router.put(
 	"/update/:eventId",
-	isAuth,
 	eventValidator,
 	eventsController.update
 );
 
 // DELETE
-router.delete("/delete/:eventId", isAuth, eventsController.delete);
+router.delete("/delete/:eventId", eventsController.delete);
 
 module.exports = router;

@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 const boardMembersRoutes = require("./routes/board-members");
-const formsRoutes = require("./routes/contact");
+const formsRoutes = require("./routes/contacts");
 const eventsRoutes = require("./routes/events");
 
 const app = express();
@@ -31,7 +31,7 @@ app.use("/auth", authRoutes);
 
 app.use("/users", usersRoutes);
 app.use("/board-members", boardMembersRoutes);
-app.use("/contact", formsRoutes);
+app.use("/contacts", formsRoutes);
 app.use("/events", eventsRoutes);
 
 app.use((error, req, res, next) => {

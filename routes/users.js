@@ -6,24 +6,21 @@ const isAuth = require("../middleware/is-auth");
 
 const router = express.Router();
 
+// TODO: add "isAuth"
+
 // GET ALL
-router.get("/getAll", isAuth, usersController.getAll);
+router.get("/getAll", usersController.getAll);
 
 // GET ONE
-router.get("/getOne/:userId", isAuth, usersController.getOneById);
+router.get("/getOne/:userId", usersController.getOneById);
 
 // CREATE
-router.post("/create", isAuth, userValidator, usersController.create);
+router.post("/create", userValidator, usersController.create);
 
 // UPDATE
-router.put(
-	"/update/:userId",
-	isAuth,
-	userValidator,
-	usersController.update
-);
+router.put("/update/:userId", userValidator, usersController.update);
 
 // DELETE
-router.delete("/delete/:userId", isAuth, usersController.delete);
+router.delete("/delete/:userId", usersController.delete);
 
 module.exports = router;
