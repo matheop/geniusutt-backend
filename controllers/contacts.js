@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const nodemailer = require("nodemailer");
 
 const ContactForm = require("../models/contact-form");
 const { error500, errorHandler } = require("../utils/error");
@@ -74,6 +75,39 @@ exports.send = async (req, res, next) => {
 
 	try {
 		const result = await form.save();
+
+		const transporter = nodemailer.createTransport({
+			service: "gmail",
+			auth: {
+				user: "matheo.pierini.pro@gmail.com",
+				pass: "S@9p!t7R&13or",
+			},
+		});
+		transporter.verify().then(console.log).catch(console.error);
+
+		const mail = `
+        Contact : ${lastname.toUpperCase()} ${firstname} <br />
+        Email : <strong>${email}</strong> <br />
+        Organisation : ${organization} <br />
+        <br />
+        Objet : ${subject} <br />
+        Message : ${message} <br />
+        `;
+
+		const mailOptions = {
+			from: "matheo.pierini.pro@gmail.com",
+			to: "matheo.pierini1@gmail.com",
+			subject: "Website: Nouvelle prise de contact",
+			html: mail,
+		};
+
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				console.log(error);
+			} else {
+				console.log("Email sent: " + info.response);
+			}
+		});
 
 		res.status(201).json({
 			message: "ContactForm created successfully!",

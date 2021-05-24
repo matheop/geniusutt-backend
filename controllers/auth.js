@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 let generator = require("generate-password");
@@ -34,6 +35,36 @@ exports.signup = async (req, res, next) => {
 			password: hashedPwd,
 			name,
 			role,
+		});
+
+		const transporter = nodemailer.createTransport({
+			service: "gmail",
+			auth: {
+				user: "matheo.pierini.pro@gmail.com",
+				pass: "S@9p!t7R&13or",
+			},
+		});
+		transporter.verify().then(console.log).catch(console.error);
+
+		const mail = `
+        Salut, ${name} !<br /><br />
+        Voici ton mot de passe pour pouvoir accéder à ton espace admin.<br /><br />
+        Mot de passe : <strong>${password}</strong> <br />
+        `;
+
+		const mailOptions = {
+			from: "matheo.pierini.pro@gmail.com",
+			to: email,
+			subject: "Website: Nouvelle prise de contact",
+			html: mail,
+		};
+
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				console.log(error);
+			} else {
+				console.log("Email sent: " + info.response);
+			}
 		});
 
 		const result = await user.save();
