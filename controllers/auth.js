@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { validationResult } = require("express-validator");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
@@ -106,7 +107,7 @@ exports.login = async (req, res, next) => {
 			userId: user._id.toString(),
 		};
 
-		const token = jwt.sign(payload, "secretkey-magl", {
+		const token = jwt.sign(payload, process.env.JWT_SECRET, {
 			expiresIn: "48h", // TODO: change expiration
 		});
 

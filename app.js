@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 
+require("dotenv").config();
 const bodyParser = require("body-parser");
 
 const authRoutes = require("./routes/auth");
@@ -10,6 +11,9 @@ const formsRoutes = require("./routes/contacts");
 const eventsRoutes = require("./routes/events");
 
 const app = express();
+
+const HOST = process.env.HOST;
+const PORT = process.env.PORT;
 
 app.use(bodyParser.json()); // application/json
 
@@ -47,6 +51,8 @@ mongoose
 		{ useNewUrlParser: true, useUnifiedTopology: true }
 	)
 	.then(() => {
-		app.listen(8080);
+		app.listen(PORT, HOST, () => {
+			console.log(`Server running at http://${HOST}:${PORT}/`);
+		});
 	})
 	.catch((err) => console.log(err));

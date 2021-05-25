@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 const { error500, errorHandler } = require("../utils/error");
 
 module.exports = (req, res, next) => {
@@ -8,7 +9,7 @@ module.exports = (req, res, next) => {
 	const token = authHeader.split(" ")[1];
 	let decodedToken;
 	try {
-		decodedToken = jwt.verify(token, "secretkey-magl");
+		decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 	} catch (error) {
 		throw error500(error);
 	}
