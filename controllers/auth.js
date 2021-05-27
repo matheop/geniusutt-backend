@@ -103,8 +103,7 @@ exports.login = async (req, res, next) => {
 		if (!isEqual) throw errorHandler("Wrong IDs.", 401);
 
 		const payload = {
-			email: user.email,
-			userId: user._id.toString(),
+			user: await User.findOne({ email }).select("-password"),
 		};
 
 		const token = jwt.sign(payload, process.env.JWT_SECRET, {

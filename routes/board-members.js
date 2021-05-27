@@ -4,7 +4,7 @@ const boardMembersController = require("../controllers/board-members");
 
 const { memberValidator } = require("../utils/dataValidator");
 const isAuth = require("../middleware/is-auth");
-// TODO: add "isAuth"
+const isAdmin = require("../middleware/is-admin");
 
 const router = express.Router();
 
@@ -17,6 +17,8 @@ router.get("/getOne/:userId", boardMembersController.getOneById);
 // CREATE
 router.post(
 	"/create",
+	isAuth,
+	isAdmin,
 	memberValidator,
 	boardMembersController.create
 );
@@ -24,11 +26,18 @@ router.post(
 // UPDATE
 router.put(
 	"/update/:userId",
+	isAuth,
+	isAdmin,
 	memberValidator,
 	boardMembersController.update
 );
 
 // DELETE
-router.delete("/delete/:userId", boardMembersController.delete);
+router.delete(
+	"/delete/:userId",
+	isAuth,
+	isAdmin,
+	boardMembersController.delete
+);
 
 module.exports = router;

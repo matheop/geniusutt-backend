@@ -7,15 +7,17 @@ module.exports = (req, res, next) => {
 	if (!authHeader) throw errorHandler("Not authenticated", 401);
 
 	const token = authHeader.split(" ")[1];
+	console.log("token:", token);
 	let decodedToken;
 	try {
 		decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+		console.log("decodedToken:", decodedToken);
 	} catch (error) {
 		throw error500(error);
 	}
 
 	if (!decodedToken) throw errorHandler("Not authenticated", 401);
 
-	req.userId = decodedToken.userId;
+	req.userId = decodedToken.user._id;
 	next();
 };
