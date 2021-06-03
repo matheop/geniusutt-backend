@@ -92,7 +92,7 @@ exports.update = async (req, res, next) => {
 	}
 
 	try {
-		const user = await User.findById(id);
+		const user = await User.findById(id).select("-password");
 
 		if (!user) throw errorHandler("No user found.", 404);
 
@@ -122,8 +122,55 @@ exports.delete = async (req, res, next) => {
 		res.status(200).json({
 			success: true,
 			message: "User deleted successfully",
-			deletedMember: user,
+			deletedUser: user,
 		});
+	} catch (error) {
+		const err = error500(error);
+		next(err);
+	}
+};
+
+// PASSWORD
+exports.changePassword = async (req, res, next) => {
+	const id = req.params.userId;
+	const oldPassword = req.body.oldPassword;
+	const newPassword = req.body.newPassword;
+
+	try {
+		if (req.userId !== id) throw errorHandler("Not allowed", 403);
+
+		const user = await User.findById(id);
+		if (!user) throw errorHandler("No user found.", 404);
+
+		const isEqual = await bcrypt.compare(
+			oldPassword,
+			user.password
+		);
+
+		if (isEqual) {
+			if (oldPassword !== newPassword) {
+				const newHashedPass = await bcrypt.hash(
+					newPassword,
+					12
+				);
+				user.password = newHashedPass;
+
+				result = await user.save();
+
+				res.status(200).json({
+					success: true,
+					message: "Password successfully updated",
+					userId: result._id,
+				});
+			} else {
+				throw errorHandler(
+					"New and old passwords are identical",
+					401
+				);
+			}
+		} else {
+			throw errorHandler("Wrong password", 401);
+		}
 	} catch (error) {
 		const err = error500(error);
 		next(err);

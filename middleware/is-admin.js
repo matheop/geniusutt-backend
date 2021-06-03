@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
 
 		if (!user) throw errorHandler("No user found.", 404);
 		else if (user.role !== Roles.ADMIN) {
-			throw errorHandler("Not allowed", 405);
+			throw errorHandler("Not allowed", 403);
 		}
 	} catch (err) {
 		throw err;

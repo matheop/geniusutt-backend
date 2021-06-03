@@ -46,4 +46,11 @@ router.delete(
 	usersController.delete
 );
 
+// CHANGE PWD
+router.put(
+	"/change-password/:userId",
+	isAuth,
+	usersController.changePassword
+);
+
 module.exports = router;

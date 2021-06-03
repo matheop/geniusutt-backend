@@ -107,7 +107,7 @@ exports.login = async (req, res, next) => {
 		};
 
 		const token = jwt.sign(payload, process.env.JWT_SECRET, {
-			expiresIn: "48h", // TODO: change expiration
+			expiresIn: "4h", // TODO: change expiration
 		});
 
 		res.status(200).json({ token, payload });
