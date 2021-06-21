@@ -7,8 +7,6 @@ const isAdmin = require("../middleware/is-admin");
 
 const router = express.Router();
 
-// TODO: add "isAuth"
-
 // GET ALL
 router.get("/getAll", isAuth, isAdmin, usersController.getAll);
 

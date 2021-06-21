@@ -52,6 +52,10 @@ exports.create = async (req, res, next) => {
 	const { email, name, role } = req.body;
 
 	try {
+		const userAlreadyExists = await User.findOne({ email });
+		if (!!userAlreadyExists)
+			throw errorHandler("User already exists.", 409);
+
 		const password = generator.generate({
 			numbers: true,
 			symbols: true,
@@ -67,10 +71,12 @@ exports.create = async (req, res, next) => {
 		});
 		const result = await user.save();
 
+		console.log("result:", result);
+
 		res.status(201).json({
 			success: true,
 			message: "User successfully created",
-			user: { name, email, role },
+			user: { name, email, role, _id: result._id },
 		});
 	} catch (error) {
 		const err = error500(error);
@@ -91,8 +97,16 @@ exports.update = async (req, res, next) => {
 		});
 	}
 
+	const email = req.body.email;
+
 	try {
 		const user = await User.findById(id).select("-password");
+
+		if (email !== user.email) {
+			const userAlreadyExists = await User.findOne({ email });
+			if (!!userAlreadyExists)
+				throw errorHandler("User already exists.", 409);
+		}
 
 		if (!user) throw errorHandler("No user found.", 404);
 

@@ -1,4 +1,5 @@
 require("dotenv").config();
+const cookie = require("cookie");
 const { validationResult } = require("express-validator");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
@@ -110,7 +111,22 @@ exports.login = async (req, res, next) => {
 			expiresIn: "4h", // TODO: change expiration
 		});
 
-		res.status(200).json({ token, payload });
+		var expiryDate = new Date();
+		expiryDate.setHours(expiryDate.getHours() + 1);
+
+		const cookieToken = cookie.serialize("token", token, {
+			maxAge: 60 * 60 * 4, // 4 hours
+		}); // add token dans cookie (headers)
+
+		console.log("cookieToken:", cookieToken);
+
+		// To Write a Cookie
+		res.writeHead(200, {
+			"Set-Cookie": cookieToken,
+			"Content-Type": "text/plain",
+		});
+
+		res.end(JSON.stringify({ token, payload }));
 	} catch (error) {
 		const err = error500(error);
 		next(err);

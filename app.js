@@ -14,15 +14,18 @@ const app = express();
 
 const HOST = process.env.HOST;
 const PORT = process.env.PORT;
+const MONGO_PASS = process.env.MONGO_PASS;
 
 app.use(bodyParser.json()); // application/json
 
 app.use((req, res, next) => {
 	res.setHeader("Access-Control-Allow-Origin", "*");
+	res.setHeader("Access-Control-Allow-Credentials", "true");
 	res.setHeader(
 		"Access-Control-Allow-Methods",
 		"OPTIONS, GET, POST, PUT, PATCH, DELETE, HEAD"
 	);
+	res.setHeader("Access-Control-Expose-Headers", "Authorization");
 	res.setHeader(
 		"Access-Control-Allow-Headers",
 		"Content-Type, Authorization"
@@ -47,8 +50,12 @@ app.use((error, req, res, next) => {
 
 mongoose
 	.connect(
-		"mongodb+srv://matheop:Tf1aP8s2U7bhOZML@cluster0.0ihgb.mongodb.net/genius-utt?authSource=admin&replicaSet=atlas-jkg9wq-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true",
-		{ useNewUrlParser: true, useUnifiedTopology: true }
+		`mongodb+srv://matheop:${MONGO_PASS}@cluster0.0ihgb.mongodb.net/genius-utt?authSource=admin&replicaSet=atlas-jkg9wq-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true`,
+		{
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+			useCreateIndex: true,
+		}
 	)
 	.then(() => {
 		app.listen(PORT, HOST, () => {
