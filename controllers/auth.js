@@ -114,15 +114,13 @@ exports.login = async (req, res, next) => {
 		var expiryDate = new Date();
 		expiryDate.setHours(expiryDate.getHours() + 1);
 
-		const cookieToken = cookie.serialize("token", token, {
+		const tokenCookie = cookie.serialize("token", token, {
 			maxAge: 60 * 60 * 4, // 4 hours
-		}); // add token dans cookie (headers)
-
-		console.log("cookieToken:", cookieToken);
+		});
 
 		// To Write a Cookie
 		res.writeHead(200, {
-			"Set-Cookie": cookieToken,
+			"Set-Cookie": tokenCookie,
 			"Content-Type": "text/plain",
 		});
 
