@@ -116,6 +116,7 @@ exports.login = async (req, res, next) => {
 
 		const tokenCookie = cookie.serialize("token", token, {
 			maxAge: 60 * 60 * 4, // 4 hours
+			// httpOnly: true,
 		});
 
 		// To Write a Cookie

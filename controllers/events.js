@@ -1,5 +1,8 @@
+const fs = require("fs");
+const path = require("path");
 const { validationResult } = require("express-validator");
 
+const appDir = require("../utils/path");
 const Event = require("../models/event");
 const { error500, errorHandler } = require("../utils/error");
 
@@ -46,16 +49,10 @@ exports.create = async (req, res, next) => {
 		});
 	}
 
-	const {
-		name,
-		date,
-		schedule,
-		place,
-		desc,
-		imgUrl,
-		videoUrl,
-		upcoming,
-	} = req.body;
+	if (!req.file) throw errorHandler("No image found.", 422);
+
+	const { name, date, schedule, place, desc } = req.body;
+	const imgUrl = req.file.path;
 
 	const event = new Event({
 		name,
@@ -64,8 +61,7 @@ exports.create = async (req, res, next) => {
 		place,
 		desc,
 		imgUrl,
-		videoUrl,
-		upcoming,
+		upcoming: true,
 	});
 
 	try {
@@ -104,9 +100,10 @@ exports.update = async (req, res, next) => {
 		event.schedule = req.body.schedule;
 		event.place = req.body.place;
 		event.desc = req.body.desc;
-		event.imgUrl = req.body.imgUrl;
-		event.videoUrl = req.body.videoUrl;
-		event.upcoming = req.body.upcoming;
+		if (req.file) {
+			event.imgUrl = req.file.path;
+		}
+		// event.upcoming = req.body.upcoming;
 
 		result = await event.save();
 
@@ -127,6 +124,12 @@ exports.delete = async (req, res, next) => {
 	try {
 		const event = await Event.findByIdAndDelete(id);
 		if (!event) throw errorHandler("No event found.", 404);
+		fs.unlink(`${appDir}/${event.imgUrl}`, (err) => {
+			if (err) {
+				console.log("err:", err);
+			}
+		});
+
 		res.status(200).json({
 			success: true,
 			message: "Event deleted successfully",

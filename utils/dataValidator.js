@@ -75,10 +75,7 @@ exports.updateFormState = body("contacted").exists().isBoolean();
 
 /* Events */
 exports.eventValidator = [
-	body("name", "name must have at least 5 chars")
-		.exists()
-		.trim()
-		.isLength({ min: 5 }),
+	body("name", "name must have at least 5 chars").exists().trim(),
 	body("date", "Invalid date").exists().matches(dateValidator),
 	body("schedule").optional().matches(scheduleValidator),
 	body("place").optional(),
@@ -87,6 +84,5 @@ exports.eventValidator = [
 		.trim()
 		.isLength({ min: 20 }),
 	body("imgUrl").optional(),
-	body("videoUrl").optional(),
-	body("upcoming").exists(),
+	body("upcoming").optional(),
 ];

@@ -31,9 +31,6 @@ const eventSchema = new Schema({
 	imgUrl: {
 		type: String,
 	},
-	videoUrl: {
-		type: String,
-	},
 	eventUrl: {
 		type: String,
 	},
