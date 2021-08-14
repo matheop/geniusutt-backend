@@ -101,6 +101,11 @@ exports.update = async (req, res, next) => {
 		event.place = req.body.place;
 		event.desc = req.body.desc;
 		if (req.file) {
+			fs.unlink(`${appDir}/${event.imgUrl}`, (err) => {
+				if (err) {
+					console.log("err:", err);
+				}
+			});
 			event.imgUrl = req.file.path;
 		}
 		// event.upcoming = req.body.upcoming;

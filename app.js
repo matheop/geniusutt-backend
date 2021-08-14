@@ -18,7 +18,10 @@ const fileStorage = multer.diskStorage({
 		cb(null, "images");
 	},
 	filename: (req, file, cb) => {
-		cb(null, `event-${file.originalname}`);
+		let filename = req.body.name.replace(/ |\//g, "-");
+		if (!!req.body.date) filename = `event-${filename}`;
+		else filename = `boardmember-${filename}`;
+		cb(null, `${filename}.${file.mimetype.split("/")[1]}`);
 	},
 });
 const fileFilter = (req, file, cb) => {
