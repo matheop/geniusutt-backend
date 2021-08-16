@@ -1,8 +1,9 @@
+const fs = require("fs");
+
 const { validationResult } = require("express-validator");
-
 const BoardMember = require("../models/board-member");
-
 const { error500, errorHandler } = require("../utils/error");
+const appDir = require("../utils/path");
 
 // GET
 exports.getAll = async (req, res, next) => {
@@ -40,6 +41,7 @@ exports.getOneById = async (req, res, next) => {
 // POST
 exports.create = async (req, res, next) => {
 	const errors = validationResult(req);
+	console.log("here");
 	if (!errors.isEmpty()) {
 		return res.status(422).json({
 			success: false,
@@ -54,15 +56,19 @@ exports.create = async (req, res, next) => {
 		});
 	}
 
+	if (!req.file) throw errorHandler("No image found.", 422);
+
 	const { name, position, shortDesc, longDesc, linkedin } =
 		req.body;
+	const imgUrl = req.file.path;
 
 	const member = new BoardMember({
-		name: name,
-		position: position,
-		shortDesc: shortDesc,
-		longDesc: longDesc,
-		linkedin: linkedin,
+		name,
+		position,
+		shortDesc,
+		longDesc,
+		linkedin,
+		imgUrl,
 	});
 
 	try {
@@ -83,6 +89,7 @@ exports.update = async (req, res, next) => {
 	const id = req.params.userId;
 
 	const errors = validationResult(req);
+
 	if (!errors.isEmpty()) {
 		return res.status(422).json({
 			success: false,
@@ -90,6 +97,7 @@ exports.update = async (req, res, next) => {
 			errors: errors.array(),
 		});
 	}
+	console.log("aint here");
 
 	try {
 		const member = await BoardMember.findById(id);
@@ -101,6 +109,15 @@ exports.update = async (req, res, next) => {
 		member.shortDesc = req.body.shortDesc;
 		member.longDesc = req.body.longDesc;
 		member.linkedin = req.body.linkedin;
+
+		if (req.file) {
+			fs.unlink(`${appDir}/${member.imgUrl}`, (err) => {
+				if (err) {
+					console.log("err:", err);
+				}
+			});
+			member.imgUrl = req.file.path;
+		}
 
 		const result = await member.save();
 		res.status(200).json({
@@ -122,6 +139,11 @@ exports.delete = async (req, res, next) => {
 		const member = await BoardMember.findByIdAndDelete(id);
 
 		if (!member) throw errorHandler("No member found.", 404);
+		fs.unlink(`${appDir}/${member.imgUrl}`, (err) => {
+			if (err) {
+				console.log("err:", err);
+			}
+		});
 
 		res.status(200).json({
 			success: true,

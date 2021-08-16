@@ -1,5 +1,4 @@
 const fs = require("fs");
-const path = require("path");
 const { validationResult } = require("express-validator");
 
 const appDir = require("../utils/path");
@@ -61,7 +60,6 @@ exports.create = async (req, res, next) => {
 		place,
 		desc,
 		imgUrl,
-		upcoming: true,
 	});
 
 	try {
@@ -108,7 +106,6 @@ exports.update = async (req, res, next) => {
 			});
 			event.imgUrl = req.file.path;
 		}
-		// event.upcoming = req.body.upcoming;
 
 		result = await event.save();
 

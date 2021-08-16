@@ -34,11 +34,6 @@ const eventSchema = new Schema({
 	eventUrl: {
 		type: String,
 	},
-	upcoming: {
-		// TODO: temporary
-		type: Boolean,
-		required: true,
-	},
 });
 
 module.exports = mongoose.model("Event", eventSchema);

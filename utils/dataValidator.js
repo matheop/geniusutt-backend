@@ -40,18 +40,18 @@ exports.userValidator = [
 
 /* Board Members */
 exports.memberValidator = [
-	body("name", "name must have at least 2 chars")
-		.exists()
-		.trim()
-		.isLength({ min: 2 }),
+	body("name", "name must have at least 2 chars").exists().trim(),
 	body("position").exists(),
-	body("shortDesc", "shortDesc must contain at least 70 chars")
-		.exists()
-		.isLength({ min: 70 }),
-	body("longDesc", "longDesc must contain at least 200 chars")
-		.exists()
-		.isLength({ min: 200 }),
+	body(
+		"shortDesc",
+		"shortDesc must contain at least 70 chars"
+	).exists(),
+	body(
+		"longDesc",
+		"longDesc must contain at least 200 chars"
+	).exists(),
 	body("linkedin").exists().contains("www.linkedin.com/in"),
+	body("imgUrl").optional(),
 ];
 
 /* Contact Form */
@@ -84,5 +84,4 @@ exports.eventValidator = [
 		.trim()
 		.isLength({ min: 20 }),
 	body("imgUrl").optional(),
-	body("upcoming").optional(),
 ];
