@@ -41,7 +41,7 @@ exports.getOneById = async (req, res, next) => {
 // POST
 exports.create = async (req, res, next) => {
 	const errors = validationResult(req);
-	console.log("here");
+
 	if (!errors.isEmpty()) {
 		return res.status(422).json({
 			success: false,
@@ -97,7 +97,6 @@ exports.update = async (req, res, next) => {
 			errors: errors.array(),
 		});
 	}
-	console.log("aint here");
 
 	try {
 		const member = await BoardMember.findById(id);
