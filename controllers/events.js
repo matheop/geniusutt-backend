@@ -43,14 +43,20 @@ exports.create = async (req, res, next) => {
 	if (!errors.isEmpty()) {
 		return res.status(422).json({
 			success: false,
-			requiredFields: ["name", "date", "schedule", "desc"],
+			requiredFields: [
+				"name",
+				"date",
+				"schedule",
+				"place",
+				"desc",
+			],
 			errors: errors.array(),
 		});
 	}
 
 	if (!req.file) throw errorHandler("No image found.", 422);
 
-	const { name, date, schedule, place, desc } = req.body;
+	const { name, date, schedule, place, desc, eventUrl } = req.body;
 	const imgUrl = req.file.path;
 
 	const event = new Event({
@@ -60,6 +66,7 @@ exports.create = async (req, res, next) => {
 		place,
 		desc,
 		imgUrl,
+		eventUrl,
 	});
 
 	try {
@@ -98,6 +105,8 @@ exports.update = async (req, res, next) => {
 		event.schedule = req.body.schedule;
 		event.place = req.body.place;
 		event.desc = req.body.desc;
+		event.eventUrl = req.body.eventUrl;
+
 		if (req.file) {
 			fs.unlink(`${appDir}/${event.imgUrl}`, (err) => {
 				if (err) {
