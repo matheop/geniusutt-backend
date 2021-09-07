@@ -1,7 +1,10 @@
 const express = require("express");
 
 const usersController = require("../controllers/users");
-const { userValidator } = require("../utils/dataValidator");
+const {
+	userValidator,
+	signupValidator,
+} = require("../utils/dataValidator");
 const isAuth = require("../middleware/is-auth");
 const isAdmin = require("../middleware/is-admin");
 
@@ -23,7 +26,7 @@ router.post(
 	"/create",
 	isAuth,
 	isAdmin,
-	userValidator,
+	signupValidator,
 	usersController.create
 );
 

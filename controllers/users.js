@@ -1,6 +1,10 @@
+require("dotenv").config();
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 let generator = require("generate-password");
+
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SG_API_KEY);
 
 const User = require("../models/user");
 const { error500, errorHandler } = require("../utils/error");
@@ -60,6 +64,7 @@ exports.create = async (req, res, next) => {
 			numbers: true,
 			symbols: true,
 			strict: true,
+			exclude: '"',
 		});
 		const hashedPwd = await bcrypt.hash(password, 12);
 
@@ -69,8 +74,25 @@ exports.create = async (req, res, next) => {
 			name,
 			role,
 		});
+
 		const result = await user.save();
 
+		const mail = `
+        Salut, ${name} !
+        <br /><br />
+        Voici ton mot de passe pour pouvoir accéder à ton espace admin : #ADD_URL
+        <br /><br />
+        Mot de passe : <strong>${password}</strong> <br />
+        `;
+
+		const mailOptions = {
+			from: "matheo.pierini.pro@gmail.com",
+			to: email,
+			subject: "Genius UTT – identifiants",
+			html: mail,
+		};
+
+		sgMail.send(mailOptions);
 		res.status(201).json({
 			success: true,
 			message: "User successfully created",
