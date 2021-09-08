@@ -11,7 +11,6 @@ module.exports = (req, res, next) => {
 	let decodedToken;
 	try {
 		decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-		// console.log("decodedToken:", decodedToken);
 	} catch (error) {
 		throw errorHandler("Not authenticated", 401);
 	}
