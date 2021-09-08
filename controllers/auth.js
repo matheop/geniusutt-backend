@@ -24,7 +24,6 @@ exports.login = async (req, res, next) => {
 		const user = await User.findOne({ email });
 		if (!user) throw errorHandler("No user found.", 401);
 
-		// const isEqual = password === user.password;
 		const isEqual = await bcrypt.compare(password, user.password);
 
 		if (!isEqual) throw errorHandler("Wrong IDs.", 401);
