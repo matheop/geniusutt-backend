@@ -50,7 +50,7 @@ exports.memberValidator = [
 		"longDesc",
 		"longDesc must contain at least 200 chars"
 	).exists(),
-	body("linkedin").exists().contains("www.linkedin.com/in"),
+	body("linkedin").exists().contains("linkedin.com/in"),
 	body("imgUrl").optional(),
 ];
 

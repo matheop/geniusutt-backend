@@ -90,10 +90,19 @@ exports.update = async (req, res, next) => {
 
 	const errors = validationResult(req);
 
+	// console.log("req.body:", req.body);
+
 	if (!errors.isEmpty()) {
+		console.log("errors:", errors);
 		return res.status(422).json({
 			success: false,
-			requiredFields: "",
+			requiredFields: [
+				"name",
+				"position",
+				"shortDesc",
+				"longDesc",
+				"linkedin",
+			],
 			errors: errors.array(),
 		});
 	}
