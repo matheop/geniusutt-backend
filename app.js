@@ -18,13 +18,18 @@ const fileStorage = multer.diskStorage({
 		cb(null, "images");
 	},
 	filename: (req, file, cb) => {
-		let name = req.body.name
+		const name = req.body.name
 			.normalize("NFD")
 			.replace(/[\u0300-\u036f]/g, ""); // remove accent
 		let filename = name.replace(/ |\//g, "-"); // remove spaces & /
 		if (!!req.body.date) filename = `event-${filename}`;
 		else filename = `boardmember-${filename}`;
-		cb(null, `${filename}.${file.mimetype.split("/")[1]}`);
+		cb(
+			null,
+			`${filename}-${Math.floor(Math.random() * 1001)}.${
+				file.mimetype.split("/")[1]
+			}`
+		);
 	},
 });
 const fileFilter = (req, file, cb) => {
