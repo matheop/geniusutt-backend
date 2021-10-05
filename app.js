@@ -41,7 +41,7 @@ const fileFilter = (req, file, cb) => {
 const app = express();
 
 const HOST = process.env.HOST;
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const MONGO_PASS = process.env.MONGO_PASS;
 
 app.use((req, res, next) => {
@@ -87,7 +87,7 @@ mongoose
 		}
 	)
 	.then(() => {
-		app.listen(PORT, HOST, () => {
+		app.listen(PORT, () => {
 			console.log(`Server running at http://${HOST}:${PORT}/`);
 		});
 	})
