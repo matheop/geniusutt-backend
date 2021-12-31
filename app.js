@@ -45,10 +45,16 @@ const PORT = process.env.PORT || 3000;
 const MONGO_PASS = process.env.MONGO_PASS;
 
 app.use((req, res, next) => {
-	res.setHeader(
-		"Access-Control-Allow-Origin",
-		"http://localhost:3000"
-	);
+	const allowedOrigins = [
+		"http://127.0.0.1:3000",
+		"http://localhost:3000",
+		"https://geniusutt.fr",
+		"https://www.geniusutt.fr",
+	];
+	const origin = req.headers.origin;
+	if (allowedOrigins.includes(origin)) {
+		res.setHeader("Access-Control-Allow-Origin", origin);
+	}
 	res.setHeader("Access-Control-Allow-Methods", "*");
 	res.setHeader("Access-Control-Allow-Credentials", "true");
 	res.setHeader("Access-Control-Expose-Headers", "Authorization");
