@@ -47,11 +47,13 @@ const MONGO_PASS = process.env.MONGO_PASS;
 app.use((req, res, next) => {
 	const allowedOrigins = [
 		"http://127.0.0.1:3000",
+		"https://127.0.0.1:3000",
 		"http://localhost:3000",
+		"https://localhost:3000",
 		"https://geniusutt.fr",
 		"https://www.geniusutt.fr",
 	];
-	const origin = req.headers.origin;
+	const origin = req.get("origin");
 	if (allowedOrigins.includes(origin)) {
 		res.setHeader("Access-Control-Allow-Origin", origin);
 	}
